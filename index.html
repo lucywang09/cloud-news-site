@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud News</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☁️ Cloud News</h1>
+            <p class="subtitle">Latest updates from AWS, Azure, Google Cloud, and Cloudflare</p>
+            <p class="last-updated" id="lastUpdated">Loading...</p>
+        </header>
+
+        <main>
+            <div id="newsList" class="news-list">
+                <p class="loading">Loading news...</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Auto-updated from official RSS feeds</p>
+        </footer>
+    </div>
+
+    <script>
+        async function loadNews() {
+            try {
+                const response = await fetch('news.json');
+                const data = await response.json();
+                
+                // Update last updated timestamp
+                const lastUpdatedEl = document.getElementById('lastUpdated');
+                const date = new Date(data.lastUpdated);
+                lastUpdatedEl.textContent = `Last updated: ${date.toLocaleString()}`;
+                
+                // Render news items
+                const newsListEl = document.getElementById('newsList');
+                if (data.items && data.items.length > 0) {
+                    newsListEl.innerHTML = data.items.map(item => {
+                        const itemDate = new Date(item.date);
+                        const formattedDate = itemDate.toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                        });
+                        
+                        return `
+                            <article class="news-item">
+                                <h2><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a></h2>
+                                <div class="meta">
+                                    <span class="source source-${item.source.toLowerCase().replace(/\s+/g, '-')}">${item.source}</span>
+                                    <span class="date">${formattedDate}</span>
+                                </div>
+                            </article>
+                        `;
+                    }).join('');
+                } else {
+                    newsListEl.innerHTML = '<p class="no-news">No news items found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading news:', error);
+                document.getElementById('newsList').innerHTML = 
+                    '<p class="error">Failed to load news. Please try again later.</p>';
+            }
+        }
+
+        // Load news when page loads
+        loadNews();
+    </script>
+</body>
+</html>

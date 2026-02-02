@@ -1,0 +1,23 @@
+{
+  "name": "cloud-news-site",
+  "version": "1.0.0",
+  "description": "A minimal GitHub Pages site showing latest cloud news from RSS feeds",
+  "type": "module",
+  "scripts": {
+    "update-news": "node scripts/update-news.js"
+  },
+  "keywords": [
+    "cloud",
+    "news",
+    "rss",
+    "aws",
+    "azure",
+    "google-cloud",
+    "cloudflare"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
